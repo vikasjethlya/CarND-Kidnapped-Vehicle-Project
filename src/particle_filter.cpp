@@ -183,7 +183,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 			}
 
-			long double multiplr = MultivariateGaussianProb(meas_x, meas_y, mu_x, mu_y, std_landmark);
+			long double multiplr = exp(-0.5 * (pow(meas_x-mu_x, 2.0) * std_landmark[0] + pow(meas_y-mu_y, 2.0) * std_landmark[1])) / sqrt(2.0 * M_PI * std_landmark[0] * std_landmark[1]);
 
 			if(multiplr > 0)
 			{
@@ -194,22 +194,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 		weights.push_back(weight);
 		particles[i].weight = weight;
 	}
-
-}
-
-double ParticleFilter::MultivariateGaussianProb(double x_trans, double y_trans, double landmark_x, double landmark_y, double std_landmark[])
-{
-    double prob = 0.0;
-    double temp1 = 0.0;
-    double temp2 = 0.0;
-
-    temp1 = 1.0/2*M_PI*std_landmark[0]*std_landmark[1];
-
-    temp2 = (pow((x_trans - landmark_x),2)/2*pow(std_landmark[0],2)) + (pow((y_trans-landmark_y),2)/2*pow(std_landmark[1],2));
-
-    prob = temp1 * exp(-temp2);
-
-    return prob;
 
 }
 
